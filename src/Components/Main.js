@@ -79,7 +79,8 @@ const Main = ({labels, addLabel}) => {
     
   }
 
-
+//TODO: https://stackoverflow.com/questions/61637191/how-to-convert-pdf-to-image-in-reactjs
+//Implement the ability to convert PDF to Image
   return (
     <main className={classes.content}>
         
@@ -99,6 +100,7 @@ const Main = ({labels, addLabel}) => {
                 type="file"
                 onChange={handleFileChange}
             />
+            
             <label htmlFor="contained-button-file">
             <Button variant="contained" color="primary" component="span">
                 Upload
