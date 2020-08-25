@@ -8,6 +8,11 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import 'react-image-crop/dist/ReactCrop.css';
 
+import '@firebase/firestore';
+import firebase from '@firebase/app';
+
+
+
 const useStyles = makeStyles((theme) => ({
   content: {
     height : '89vh',
@@ -79,6 +84,23 @@ const Main = ({labels, addLabel}) => {
     
   }
 
+  //function to save template if template has at least 1 label in it
+  const saveToDB = () =>{
+      var userID = 123; //Demo userID to populate later
+      var templateName = "DemoTemplate";
+
+      const db = firebase.firestore();
+      //const labelsArray = labels.map((obj)=> {return Object.assign({}, obj)});
+
+      const template = db.collection('templates').add({
+        userID: userID,
+        templateName: templateName
+        //labelList: labelsArray
+      });  
+      console.log(template);
+
+  }
+
 //TODO: https://stackoverflow.com/questions/61637191/how-to-convert-pdf-to-image-in-reactjs
 //Implement the ability to convert PDF to Image
   return (
@@ -121,7 +143,7 @@ const Main = ({labels, addLabel}) => {
             </Button>
           </div>
             
-            <Button variant="contained" color="primary" onClick={() => console.log(labels)}>
+            <Button variant="contained" color="primary" onClick={saveToDB}>
               Log
             </Button>
         </div>
