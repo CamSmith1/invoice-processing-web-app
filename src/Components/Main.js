@@ -19,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
     
   },
   imageDiv : {
-    height : '90%',
+    height : '100%',
     overflow : 'scroll',
-    flexBasis: '90%',
+    flexBasis: '100%',
   },
   image : {
     width: '100%',
