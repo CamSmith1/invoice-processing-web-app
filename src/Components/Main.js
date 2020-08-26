@@ -57,6 +57,9 @@ const Main = ({labels, addLabel}) => {
   const [crop , setCrop] = useState({})
   const [id , setId] = useState(0)
   const [label , setLabel] =  useState("")
+
+
+
   const handleFileChange = e => {
     selectFile(URL.createObjectURL(e.target.files[0]))
   }
