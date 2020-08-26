@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   return (
-    <div>   
+    <div>  
     <Navbar/>
     <div className={classes.body}>
     <Labels/>
