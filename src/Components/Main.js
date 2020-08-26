@@ -10,6 +10,8 @@ import 'react-image-crop/dist/ReactCrop.css';
 
 import '@firebase/firestore';
 import firebase from '@firebase/app';
+import firestore from "./Firestore";
+
 
 
 
@@ -86,20 +88,31 @@ const Main = ({labels, addLabel}) => {
 
   //function to save template if template has at least 1 label in it
   const saveToDB = () =>{
+
+    //convert labels array into an array of objects to cast as Map for firebase format
+    var labelsList = [];
+    for(var i in labels){
+      var lbl = new labelObj(labels[i].id,labels[i].x,labels[i].y,labels[i].width,labels[i].height,labels[i].label);
+      labelsList.push(lbl);
+    }
+
+      const lbls = labelsList.map((obj)=> {return Object.assign({}, obj)});
       var userID = 123; //Demo userID to populate later
       var templateName = "DemoTemplate";
-
       const db = firebase.firestore();
-      //const labelsArray = labels.map((obj)=> {return Object.assign({}, obj)});
+
 
       const template = db.collection('templates').add({
         userID: userID,
-        templateName: templateName
-        //labelList: labelsArray
+        templateName: templateName,
+        labels: lbls
+
       });  
-      console.log(template);
+      console.log(template); 
 
   }
+
+ 
 
 //TODO: https://stackoverflow.com/questions/61637191/how-to-convert-pdf-to-image-in-reactjs
 //Implement the ability to convert PDF to Image
@@ -139,12 +152,13 @@ const Main = ({labels, addLabel}) => {
               onChange={(event) => setLabel(event.target.value)}
             />
             <Button variant="contained" color="primary" onClick={getCroppedImg}>
-              Crop
+              Select Area
             </Button>
+ 
           </div>
-            
-            <Button variant="contained" color="primary" onClick={saveToDB}>
-              Log
+          
+            <Button variant="contained" color="primary" onClick={saveToDB} >
+              Submit
             </Button>
         </div>
     </main>
@@ -161,6 +175,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return{
     addLabel : (label) => dispatch(addLabel(label))
+   
   }
 }
 
@@ -169,3 +184,16 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Main)
+
+
+//Label object for firestore payload
+ class labelObj {
+  constructor(id, x,y,width,height,label) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.label = label;
+  }
+}
