@@ -10,7 +10,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 
 import '@firebase/firestore';
 import firebase from '@firebase/app';
-import firestore from "./Firestore";
 
 
 
