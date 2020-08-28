@@ -10,6 +10,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 
 import '@firebase/firestore';
 import firebase from '@firebase/app';
+import firestore from "./Firestore";
 
 
 
@@ -57,6 +58,7 @@ const Main = ({labels, addLabel}) => {
   const [id , setId] = useState(0)
   const [label , setLabel] =  useState("")
   const handleFileChange = e => {
+    console.log(e.target.files[0])
     selectFile(URL.createObjectURL(e.target.files[0]))
   }
 

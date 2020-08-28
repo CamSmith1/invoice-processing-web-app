@@ -1,28 +1,27 @@
 import React from 'react';
-import Labels from './Components/Labels'
 import Navbar from './Components/Navbar'
-import { makeStyles } from '@material-ui/core/styles';
-import Main from './Components/Main'
-import './App.css';
+import {Switch , Route} from 'react-router-dom'
+import AppTemplate from './Components/AppTemplate'
+import Dashboard from './Components/Dashboard'
+import Invoices from './Components/Invoices'
 
-const useStyles = makeStyles((theme) => ({
-  body : {
-    display : 'flex'
-  }
-}));
+import './App.css';
+import Home from './Components/Home';
+import Integrations from './Components/Integrations';
 
 
 const App = () => {
-  const classes = useStyles();
   return (
-    <div>  
-    <Navbar/>
-    <div className={classes.body}>
-    <Labels/>
-    <Main/>
+    <div>
+      <Navbar/>
+    <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/dashboard" component={Dashboard}/>
+        <Route path="/app" component={AppTemplate}/>
+        <Route path="/invoices" component={Invoices}/>
+        <Route path="/integrations" component={Integrations} />
+    </Switch>
     </div>
-    </div>
-
   );
 }
 
