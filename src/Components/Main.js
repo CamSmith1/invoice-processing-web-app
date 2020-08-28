@@ -157,10 +157,15 @@ const Main = ({labels, addLabel}) => {
             </Button>
  
           </div>
+          {labels.length > 0
+          ?
+          <Button variant="contained" color="primary" onClick={saveToDB} >
+          Submit
+        </Button>
+        :
+        null
+        }
           
-            <Button variant="contained" color="primary" onClick={saveToDB} >
-              Submit
-            </Button>
         </div>
     </main>
   );
