@@ -94,7 +94,7 @@ const Invoices = () => {
                     <MenuItem value="">
                     <em>None</em>
                     </MenuItem>
-                    <MenuItem value={1}>Template 1</MenuItem>
+                    <MenuItem value={1}>Watercare</MenuItem>
                     <MenuItem value={2}>Template 2</MenuItem>
                     <MenuItem value={3}>Template 3</MenuItem>
                 </Select>
@@ -114,13 +114,13 @@ const Invoices = () => {
                     <MenuItem value="">
                     <em>None</em>
                     </MenuItem>
-                    <MenuItem value={1}>Integration 1</MenuItem>
+                    <MenuItem value={1}>Google Sheet</MenuItem>
                     <MenuItem value={2}>Integration 2</MenuItem>
                     <MenuItem value={3}>Integration 3</MenuItem>
                 </Select>
             </FormControl>
             <input
-                accept="image/*"
+                accept="*/*"
                 className={classes.input}
                 id="contained-button-file"
                 multiple

@@ -161,10 +161,10 @@ const Main = ({labels, addLabel}) => {
           ?
           <Button variant="contained" color="primary" onClick={saveToDB} >
           Submit
-        </Button>
-        :
-        null
-        }
+          </Button>
+          :
+          null
+          }
           
         </div>
     </main>

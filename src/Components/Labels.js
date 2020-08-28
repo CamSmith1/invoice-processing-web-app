@@ -13,6 +13,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { removeLabel } from '../Redux/labels/label-actions';
 
+import TextField from '@material-ui/core/TextField';
+
+
 const drawerWidth = 240;
 
 
@@ -27,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerContainer: {
     overflow: 'auto',
+  },
+  templateNameInput: {
+    paddingTop: '25px',
+    paddingLeft : '5px'
   },
   listItem:{
     paddingLeft : '5px'
@@ -50,6 +57,14 @@ const Labels =  ({labels , removeLabel}) => {
       >
         <Toolbar />
         <div className={classes.drawerContainer}>
+        <TextField
+              className={classes.templateNameInput}
+              id="outlined-secondary"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              placeholder="Template Name"
+            />
           <List>
             { labels.map( (label) => (
               <div key={label.id}>

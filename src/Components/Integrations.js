@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         display : 'grid',
         gridTemplateColumns : '1fr 1fr',
         width : "500px",
-        height : "300px",
+        height : "500px",
         gridRowGap : '20px',
         gridColumnGap : '20px',
     },
@@ -42,33 +42,48 @@ const Integrations = () => {
     }
 
     return (
+        <div style={{textAlign : 'center'}}>
+            <h1>Integrations</h1>
         <div className={classes.container}>
             <div className={classes.buttonContainer}>
                 <div 
                     className={classes.button}
                     onClick={handleClick}
                 >
-                    Integration 1
+                    Palace
                 </div>
                 <div 
                     className={classes.button}
                     onClick={handleClick}
                 >
-                    Integration 2
+                    MyDesktop
                 </div >
                 <div 
                     className={classes.button}
                     onClick={handleClick}
                 >
-                    Integration 3
+                    QPMS
                 </div>
                 <div 
                     className={classes.button}
                     onClick={handleClick}
                 >
-                    Integration 4
+                    Salesforce
+                </div>
+                <div 
+                    className={classes.button}
+                    onClick={handleClick}
+                >
+                    Google Sheets
+                </div>
+                <div 
+                    className={classes.button}
+                    onClick={handleClick}
+                >
+                    Custom
                 </div>
             </div>
+        </div>
         </div>
     )
 }
