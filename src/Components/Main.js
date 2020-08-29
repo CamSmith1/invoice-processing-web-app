@@ -10,7 +10,10 @@ import 'react-image-crop/dist/ReactCrop.css';
 
 import '@firebase/firestore';
 import firebase from '@firebase/app';
-import firestore from "./Firestore";
+import firestore, {storage} from "./Firestore";
+
+//import {storage} from "./firebase/firebase"
+
 
 
 
@@ -57,10 +60,40 @@ const Main = ({labels, addLabel}) => {
   const [crop , setCrop] = useState({})
   const [id , setId] = useState(0)
   const [label , setLabel] =  useState("")
+
+
+
+
   const handleFileChange = e => {
     console.log(e.target.files[0])
-    selectFile(URL.createObjectURL(e.target.files[0]))
+   // selectFile(URL.createObjectURL(e.target.files[0]))
+
+    //Upload image to firebase storage
+    const file = e.target.files[0] ; // The uploaded file
+    const fileName = e.target.files[0].name; // Uploaded file name
+    const uploadTask = storage.ref(`/temp/${fileName}`).put(file);
+
+    //Call back to retrieve firebase URL
+    uploadTask.on('state_changed', 
+    (snapShot) => {
+      console.log(snapShot)
+    }, (err) => {
+      console.log(err)
+    }, () => {
+      storage.ref('temp').child(fileName).getDownloadURL()
+       .then(fireBaseUrl => {
+         //Set firebase URL to canvas
+         selectFile(fireBaseUrl);
+       })
+    })
   }
+
+
+
+
+ 
+
+
 
   const isEmpty = (obj) => { 
     for (var x in obj) { return false; }
@@ -128,6 +161,7 @@ const Main = ({labels, addLabel}) => {
           }
         <div className={classes.buttonRoot}>
           <div>
+            
           <input
                 accept="image/*"
                 className={classes.input}
@@ -142,6 +176,7 @@ const Main = ({labels, addLabel}) => {
                 Upload
             </Button>
             </label>
+
             <TextField
               className={classes.label}
               id="outlined-secondary"
