@@ -70,7 +70,9 @@ const Main = ({labels, addLabel}) => {
 
     //Upload image to firebase storage
     const file = e.target.files[0] ; // The uploaded file
-    const fileName = e.target.files[0].name; // Uploaded file name
+    //const fileName = e.target.files[0].name; // Uploaded file name
+    const fileName = generateTempFileName(30)
+    console.log('Generated File Name = ' + fileName);
     const uploadTask = storage.ref(`/temp/${fileName}`).put(file);
 
     //Call back to retrieve firebase URL
@@ -83,7 +85,7 @@ const Main = ({labels, addLabel}) => {
       storage.ref('temp').child(fileName).getDownloadURL()
        .then(fireBaseUrl => {
          //Set firebase URL to canvas
-         selectFile(fireBaseUrl);
+        selectFile(fireBaseUrl);
        })
     })
   }
@@ -218,6 +220,18 @@ const mapDispatchToProps = dispatch => {
     addLabel : (label) => dispatch(addLabel(label))
    
   }
+}
+
+
+//When given a length generate a temp name for a file of given length
+function generateTempFileName(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
 
 
