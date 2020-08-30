@@ -84,8 +84,8 @@ const Main = ({labels, addLabel}) => {
     }, () => {
       storage.ref('temp').child(fileName).getDownloadURL()
        .then(fireBaseUrl => {
-         //Set firebase URL to canvas
-        selectFile(fireBaseUrl);
+         
+        selectFile(fireBaseUrl); //Set firebase URL to canvas
        })
     })
   }
