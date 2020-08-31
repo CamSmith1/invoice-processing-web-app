@@ -84,10 +84,23 @@ const Main = ({labels, addLabel}) => {
     }, () => {
       storage.ref('temp').child(fileName).getDownloadURL()
        .then(fireBaseUrl => {
-         
+         var convertedFileName = fileName + 'converted.png';
+
+         console.log('Start Sleep');
+          delay(50000);
+         storage.ref('temp').child(convertedFileName).getDownloadURL()
+         .then(url => {
+           
+           console.log('The URL is '+ url );
+         })
+
+
+
         selectFile(fireBaseUrl); //Set firebase URL to canvas
        })
     })
+
+
   }
 
 
@@ -233,7 +246,8 @@ function generateTempFileName(length) {
   }
   return result;
 }
-
+//Sleeper method to wait X amount of seconds
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default connect(
   mapStateToProps,

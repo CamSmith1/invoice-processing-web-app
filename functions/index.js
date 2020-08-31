@@ -18,8 +18,10 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
   if (fileName.endsWith('.png')) return false;
   if (!fileName.endsWith('.pdf')) return false;
 
-  const newName = path.basename(filePath, '.pdf') + '.png';
+  const newName = path.basename(filePath, '.pdf') + 'converted.png';
   const tempNewPath = path.join(os.tmpdir(), newName);
+  console.log('FilePath ' + filePath);
+  console.log('newName ' + newName);
 
   const bucket = gcs.bucket(object.bucket);
 
@@ -33,10 +35,10 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
       gs()
         .batch()
         .nopause()
-        .option('-r' + 50 * 2)
-        .option('-dDownScaleFactor=2')
+        .option('-r' + 100 * 2)
+        .option('-dDownScaleFactor=1')
         .executablePath('lambda-ghostscript/bin/./gs')
-        .device('png16m')
+        .device('png16m') 
         .output(tempNewPath)
         .input(tempFilePath)
         .exec((err, stdout, stderr) => {
@@ -54,7 +56,6 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
   }).then(() => {
     console.log('PNG created at', tempNewPath);
 
-    // Uploading the thumbnail.
     return bucket.upload(tempNewPath, {destination: newName});
   // Once the thumbnail has been uploaded delete the local file to free up disk space.
   }).then(() => {
