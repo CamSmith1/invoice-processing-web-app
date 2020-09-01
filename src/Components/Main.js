@@ -82,10 +82,10 @@ const Main = ({labels, addLabel}) => {
         .then(fireBaseUrl => {
           var convertedFileName = fileName + 'converted.png';
          //Call to firestore to retrieve the converted pdf to PNG file and displays it on canvas, Waits 5 seconds for function to finish
-         //getConvertedPNGURL(storage, convertedFileName);
+      getConvertedPNGURL(storage, convertedFileName);
           
          // For UI Debugging to quickly upload PNG Files
-         selectFile(file);
+         //selectFile(file);
          setCropButtons(true);
        })
     })
@@ -175,9 +175,7 @@ const Main = ({labels, addLabel}) => {
                 type="file"
                 onChange={handleFileChange}
             />
-
             
-            <div>
             <label htmlFor="contained-button-file">
             <Button variant="contained" color="primary" component="span">
                 Upload
@@ -197,9 +195,6 @@ const Main = ({labels, addLabel}) => {
             <Button variant="contained" color="primary" onClick={getCroppedImg}>
               Select Area
             </Button>
-            </div>
-
-
  
           </div>
           {labels.length > 0
