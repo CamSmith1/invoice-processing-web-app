@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,6 +9,12 @@ import ListItem from '@material-ui/core/ListItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+
+import '@firebase/firestore';
+import {storage} from "./Firestore";
+import firebase from '@firebase/app';
+
+
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -41,12 +47,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Invoices = () => {
   const classes = useStyles();
-  const [template, setTemplate] = React.useState('');
-  const [integration, setIntegration] = React.useState('');
-  const [openTempSelect, setOpenTempSelect] = React.useState(false);
-  const [openIntSelect , setOpenIntSelect] = React.useState(false);
-  const [files , setFiles] = React.useState([]);
+  const [template, setTemplate] = useState('');
+  const [integration, setIntegration] = useState('');
+  const [openTempSelect, setOpenTempSelect] = useState(false);
+  const [openIntSelect , setOpenIntSelect] = useState(false);
+  const [files , setFiles] = useState([]);
 
+  const [templateList , setTemplateList] =  useState("");
+
+
+
+  /********************Utility Functions******************************** */
   const handleTemplateChange = (event) => {
     setTemplate(event.target.value);
   };
@@ -58,8 +69,6 @@ const Invoices = () => {
     setFiles(arr)
     console.log(arr)
 }
-
-
   const handleTempSelectClose = () => {
     setOpenTempSelect(false);
   };
@@ -74,6 +83,25 @@ const Invoices = () => {
   const handleIntSelectOpen = () => {
     setOpenIntSelect(true);
   };
+
+  /*************************************************************************************/  
+//Function to return a list of all templates related to the user account
+ const retrieveTemplatesList = (user) => {
+//TODO: Change this function to run against a specific user
+  const db = firebase.firestore();
+  db.collection("templates").where('userID', '==', 123)
+  .get()
+  .then(function(querySnapshot){
+    querySnapshot.forEach(function(doc){
+      console.log(doc.id, " =>", doc.data());
+    });
+  })
+  .catch(function(err){
+    console.log("Error getting doc: "+ err);
+  });
+
+
+ };
 
 
   return (
@@ -137,7 +165,7 @@ const Invoices = () => {
                 className={classes.button} 
                 variant="contained" 
                 color="primary" 
-                // onClick={} 
+                onClick={retrieveTemplatesList} 
                 >
                 Submit
                 </Button>
@@ -157,6 +185,15 @@ const Invoices = () => {
         </div>
     </div>
   );
+
+
+
+
+
+
+  
 }
+
+
 
 export default Invoices

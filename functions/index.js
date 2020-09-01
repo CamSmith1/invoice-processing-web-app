@@ -11,12 +11,15 @@ var gs = require('gs');
 const gcs = new Storage({
   projectId: "invoice-processing-webapp",
 });
+console.log('Starting Function');
 exports.makePNG = functions.storage.object().onFinalize((object) => {
   const filePath = object.name;
   const fileName = path.basename(filePath);
   const tempFilePath = path.join(os.tmpdir(), fileName);
-  if (fileName.endsWith('.png')) return false;
-  if (!fileName.endsWith('.pdf')) return false;
+ // const tempFilePath = path.join('temp', fileName);
+  //if (fileName.endsWith('.png')) return false;
+  //if (!fileName.endsWith('.pdf')) return false;
+  console.log('Setting Variables');
 
   const newName = path.basename(filePath, '.pdf') + 'converted.png';
   const tempNewPath = path.join(os.tmpdir(), newName);
@@ -55,8 +58,8 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
     }));
   }).then(() => {
     console.log('PNG created at', tempNewPath);
-
-    return bucket.upload(tempNewPath, {destination: newName});
+    console.log('The destination will be  temp/'+newName);
+    return bucket.upload(tempNewPath, {destination: 'temp/'+newName});
   // Once the thumbnail has been uploaded delete the local file to free up disk space.
   }).then(() => {
     fs.unlinkSync(tempNewPath);

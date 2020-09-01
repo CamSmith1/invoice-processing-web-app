@@ -4,20 +4,15 @@ import {connect} from 'react-redux'
 import {addLabel} from '../Redux/labels/label-actions'
 import ReactCrop from 'react-image-crop';
 import TextField from '@material-ui/core/TextField';
-
 import Button from '@material-ui/core/Button';
 import 'react-image-crop/dist/ReactCrop.css';
-
 import '@firebase/firestore';
 import firebase from '@firebase/app';
-import firestore, {storage} from "./Firestore";
-
-//import {storage} from "./firebase/firebase"
+import {storage} from "./Firestore";
 
 
 
-
-
+/*******************************Styling******************************************** */ 
 const useStyles = makeStyles((theme) => ({
   content: {
     height : '89vh',
@@ -25,13 +20,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection : "column",
     justifyContent : 'space-between',
     flexGrow: 1,
-
     
   },
   imageDiv : {
     height : '100%',
     overflow : 'scroll',
     flexBasis: '100%',
+  },
+  templateNameInput: {
+    paddingTop: '25px',
+    paddingLeft: '25%',
   },
   image : {
     width: '100%',
@@ -54,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+/*******************************Main******************************************** */ 
 const Main = ({labels, addLabel}) => {
   const classes = useStyles();
   const [src , selectFile] = useState(null)
@@ -61,59 +60,72 @@ const Main = ({labels, addLabel}) => {
   const [id , setId] = useState(0)
   const [label , setLabel] =  useState("")
 
-
-
+  const [templateName , settemplateName] = useState("")
+  const [showCroppingButtons , setCropButtons] =  useState(false)
 
   const handleFileChange = e => {
     console.log(e.target.files[0])
-   // selectFile(URL.createObjectURL(e.target.files[0]))
 
-    //Upload image to firebase storage
-    const file = e.target.files[0] ; // The uploaded file
-    //const fileName = e.target.files[0].name; // Uploaded file name
+    const file = e.target.files[0] ;
     const fileName = generateTempFileName(30)
-    console.log('Generated File Name = ' + fileName);
     const uploadTask = storage.ref(`/temp/${fileName}`).put(file);
 
     //Call back to retrieve firebase URL
     uploadTask.on('state_changed', 
-    (snapShot) => {
+     (snapShot) => {
       console.log(snapShot)
-    }, (err) => {
-      console.log(err)
-    }, () => {
+      }, (err) => {
+        console.log(err)
+      }, () => {
+
       storage.ref('temp').child(fileName).getDownloadURL()
-       .then(fireBaseUrl => {
-         var convertedFileName = fileName + 'converted.png';
-
-         console.log('Start Sleep');
-          delay(50000);
-         storage.ref('temp').child(convertedFileName).getDownloadURL()
-         .then(url => {
-           
-           console.log('The URL is '+ url );
-         })
-
-
-
-        selectFile(fireBaseUrl); //Set firebase URL to canvas
+        .then(fireBaseUrl => {
+          var convertedFileName = fileName + 'converted.png';
+         //Call to firestore to retrieve the converted pdf to PNG file and displays it on canvas, Waits 5 seconds for function to finish
+         //getConvertedPNGURL(storage, convertedFileName);
+          
+         // For UI Debugging to quickly upload PNG Files
+         selectFile(file);
+         setCropButtons(true);
        })
     })
+  }
 
-
+ /*******************************Integrated Firebase Functions******************************************** */ 
+  //Async function to wait 5 seconds for cloud function to finish converting PDF to PNG and returns the URL
+  async function getConvertedPNGURL(storage, convertedFileName){ 
+    await sleep(9000); 
+        storage.ref('temp').child(convertedFileName).getDownloadURL()
+         .then(url => {
+           selectFile(url); //Set firebase URL to canvas
+           setCropButtons(true);
+         })
   }
 
 
-
-
+    //function to save template if template has at least 1 label in it
+    const saveToDB = () =>{
+      //convert labels array into an array of objects to cast as Map for firebase format
+      var labelsList = [];
+      for(var i in labels){
+        var lbl = new labelObj(labels[i].id,labels[i].x,labels[i].y,labels[i].width,labels[i].height,labels[i].label);
+        labelsList.push(lbl);
+      }
+        const lbls = labelsList.map((obj)=> {return Object.assign({}, obj)});
+        var userID = 123; //Demo userID to populate later
+        var templateName = "DemoTemplate";
+        const db = firebase.firestore();
+  
+        const template = db.collection('templates').add({
+          userID: userID,
+          templateName: templateName,
+          labels: lbls
+        });  
+  
+        console.log(template); 
+    }
  
 
-
-
-  const isEmpty = (obj) => { 
-    for (var x in obj) { return false; }
-    return true;
- }
   const getCroppedImg = () =>{
     if(!isEmpty(crop)){
       if(crop.height !== 0 && crop.width !== 0 && label.length > 0){
@@ -130,46 +142,24 @@ const Main = ({labels, addLabel}) => {
         setCrop({});
       } 
     }
-    
-    setLabel("")
-    
+    setLabel("")  
   }
 
-  //function to save template if template has at least 1 label in it
-  const saveToDB = () =>{
-
-    //convert labels array into an array of objects to cast as Map for firebase format
-    var labelsList = [];
-    for(var i in labels){
-      var lbl = new labelObj(labels[i].id,labels[i].x,labels[i].y,labels[i].width,labels[i].height,labels[i].label);
-      labelsList.push(lbl);
-    }
-
-      const lbls = labelsList.map((obj)=> {return Object.assign({}, obj)});
-      var userID = 123; //Demo userID to populate later
-      var templateName = "DemoTemplate";
-      const db = firebase.firestore();
-
-
-      const template = db.collection('templates').add({
-        userID: userID,
-        templateName: templateName,
-        labels: lbls
-
-      });  
-      console.log(template); 
-
-  }
-
- 
-
-//TODO: https://stackoverflow.com/questions/61637191/how-to-convert-pdf-to-image-in-reactjs
-//Implement the ability to convert PDF to Image
   return (
     <main className={classes.content}>
         
           {
+            
             src && ( <div className={classes.imageDiv}>
+              <TextField
+              className={classes.templateNameInput}
+              id="outlined-secondary"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              placeholder="Template Name"
+              onChange={(event) => settemplateName(event.target.value)}
+            />
               <ReactCrop className={classes.image} src={src} crop={crop} onChange={newCrop => setCrop(newCrop)}/>
             </div>
             )
@@ -185,7 +175,9 @@ const Main = ({labels, addLabel}) => {
                 type="file"
                 onChange={handleFileChange}
             />
+
             
+            <div>
             <label htmlFor="contained-button-file">
             <Button variant="contained" color="primary" component="span">
                 Upload
@@ -205,6 +197,9 @@ const Main = ({labels, addLabel}) => {
             <Button variant="contained" color="primary" onClick={getCroppedImg}>
               Select Area
             </Button>
+            </div>
+
+
  
           </div>
           {labels.length > 0
@@ -218,23 +213,14 @@ const Main = ({labels, addLabel}) => {
           
         </div>
     </main>
-  );
+  ); 
 }
+/*******************************End of Main******************************************** */ 
 
 
-const mapStateToProps = state => {
-  return{
-    labels : state.labels
-  }
-}
 
-const mapDispatchToProps = dispatch => {
-  return{
-    addLabel : (label) => dispatch(addLabel(label))
-   
-  }
-}
 
+/*******************************Utility Functions******************************************** */ 
 
 //When given a length generate a temp name for a file of given length
 function generateTempFileName(length) {
@@ -247,14 +233,36 @@ function generateTempFileName(length) {
   return result;
 }
 //Sleeper method to wait X amount of seconds
-const delay = ms => new Promise(res => setTimeout(res, ms));
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
+const mapStateToProps = state => {
+  return{
+    labels : state.labels
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return{
+    addLabel : (label) => dispatch(addLabel(label))
+  }
+}
+
+const isEmpty = (obj) => { 
+  for (var x in obj) { return false; }
+  return true;
+}
+
+
+/*******************************Exports******************************************** */ 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Main)
 
 
+/*******************************Wrapper Class******************************************** */ 
 //Label object for firestore payload
  class labelObj {
   constructor(id, x,y,width,height,label) {

@@ -57,14 +57,6 @@ const Labels =  ({labels , removeLabel}) => {
       >
         <Toolbar />
         <div className={classes.drawerContainer}>
-        <TextField
-              className={classes.templateNameInput}
-              id="outlined-secondary"
-              size="small"
-              variant="outlined"
-              color="secondary"
-              placeholder="Template Name"
-            />
           <List>
             { labels.map( (label) => (
               <div key={label.id}>
