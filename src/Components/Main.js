@@ -10,6 +10,9 @@ import '@firebase/firestore';
 import firebase from '@firebase/app';
 import {storage} from "./Firestore";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 /*******************************Styling******************************************** */ 
@@ -60,8 +63,9 @@ const Main = ({labels, addLabel}) => {
   const [id , setId] = useState(0)
   const [label , setLabel] =  useState("")
 
+  
   const [templateName , settemplateName] = useState("")
-  const [showCroppingButtons , setCropButtons] =  useState(false)
+  //const [showCroppingButtons , setCropButtons] =  useState(false)
 
   const handleFileChange = e => {
     console.log(e.target.files[0])
@@ -86,7 +90,7 @@ const Main = ({labels, addLabel}) => {
           
          // For UI Debugging to quickly upload PNG Files
          //selectFile(file);
-         setCropButtons(true);
+        // setCropButtons(true);
        })
     })
   }
@@ -98,7 +102,7 @@ const Main = ({labels, addLabel}) => {
         storage.ref('temp').child(convertedFileName).getDownloadURL()
          .then(url => {
            selectFile(url); //Set firebase URL to canvas
-           setCropButtons(true);
+          // setCropButtons(true);
          })
   }
 
@@ -113,16 +117,26 @@ const Main = ({labels, addLabel}) => {
       }
         const lbls = labelsList.map((obj)=> {return Object.assign({}, obj)});
         var userID = 123; //Demo userID to populate later
-        var templateName = "DemoTemplate";
+        //var templateName = "DemoTemplate";
         const db = firebase.firestore();
-  
-        const template = db.collection('templates').add({
-          userID: userID,
-          templateName: templateName,
-          labels: lbls
-        });  
-  
-        console.log(template); 
+        //TODO: Handle error toast if template name is not populated
+        console.log({templateName});
+
+        if({templateName} !== "" && {templateName} !== null){ //TODO Fix the null string issue
+          const template = db.collection('templates').add({
+            userID: userID,
+            templateName: {templateName},
+            labels: lbls
+          });  
+          console.log(template); 
+          toast("Success");
+        }
+        else{
+         toast("ERROR");
+          //Error toast when no template name
+        }
+     
+      
     }
  
 
@@ -151,6 +165,7 @@ const Main = ({labels, addLabel}) => {
           {
             
             src && ( <div className={classes.imageDiv}>
+              <ToastContainer />
               <TextField
               className={classes.templateNameInput}
               id="outlined-secondary"
@@ -166,22 +181,21 @@ const Main = ({labels, addLabel}) => {
           }
         <div className={classes.buttonRoot}>
           <div>
-            
           <input
-                accept="image/*"
+                accept=".pdf"
                 className={classes.input}
                 id="contained-button-file"
                 multiple
                 type="file"
                 onChange={handleFileChange}
             />
-            
             <label htmlFor="contained-button-file">
             <Button variant="contained" color="primary" component="span">
                 Upload
             </Button>
             </label>
 
+        
             <TextField
               className={classes.label}
               id="outlined-secondary"
@@ -196,6 +210,9 @@ const Main = ({labels, addLabel}) => {
               Select Area
             </Button>
  
+
+ 
+
           </div>
           {labels.length > 0
           ?
@@ -205,8 +222,10 @@ const Main = ({labels, addLabel}) => {
           :
           null
           }
-          
+         
         </div>
+
+       
     </main>
   ); 
 }
