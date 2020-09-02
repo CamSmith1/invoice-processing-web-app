@@ -52,14 +52,22 @@ const Invoices = () => {
   const [openTempSelect, setOpenTempSelect] = useState(false);
   const [openIntSelect , setOpenIntSelect] = useState(false);
   const [files , setFiles] = useState([]);
+  let listOfTemplates = []; // List to be used for select template dropdown
+  
 
-  const [templateList , setTemplateList] =  useState("");
+  
+
+  const [templateList , setTemplateList] =  useState([]);
 
 
 
   /********************Utility Functions******************************** */
   const handleTemplateChange = (event) => {
     setTemplate(event.target.value);
+
+  };
+  const initData = (event) => {
+    retrieveTemplatesList();
   };
   const handleIntegrationChange = (event) => {
     setIntegration(event.target.value);
@@ -74,7 +82,10 @@ const Invoices = () => {
   };
 
   const handleTempSelectOpen = () => {
+    //Populate template values
     setOpenTempSelect(true);
+
+
   };
   const handleIntSelectClose = () => {
     setOpenIntSelect(false);
@@ -86,26 +97,31 @@ const Invoices = () => {
 
   /*************************************************************************************/  
 //Function to return a list of all templates related to the user account
- const retrieveTemplatesList = (user) => {
+ const retrieveTemplatesList = () => {
 //TODO: Change this function to run against a specific user
+
   const db = firebase.firestore();
   db.collection("templates").where('userID', '==', 123)
   .get()
   .then(function(querySnapshot){
     querySnapshot.forEach(function(doc){
+      listOfTemplates.push(doc.get('templateName').templateName);
       console.log(doc.id, " =>", doc.data());
+      setTemplateList(doc.get('templateName').templateName);
     });
+    console.log('The values of array');
+    console.log(listOfTemplates);
   })
   .catch(function(err){
     console.log("Error getting doc: "+ err);
   });
-
 
  };
 
 
   return (
     <div className={classes.container}>
+      {initData}
         <div className={classes.optionsContainer}>
             <FormControl className={classes.formControl}>
                 <InputLabel id="demo-controlled-open-select-label">Select Template</InputLabel>
@@ -119,12 +135,9 @@ const Invoices = () => {
                     value={template}
                     onChange={handleTemplateChange}
                 >
-                    <MenuItem value="">
-                    <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Watercare</MenuItem>
-                    <MenuItem value={2}>Template 2</MenuItem>
-                    <MenuItem value={3}>Template 3</MenuItem>
+                  
+                  
+
                 </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
