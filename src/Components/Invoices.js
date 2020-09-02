@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -45,7 +45,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
+
 const Invoices = () => {
+
+ 
+ 
   const classes = useStyles();
   const [template, setTemplate] = useState('');
   const [integration, setIntegration] = useState('');
@@ -55,7 +60,6 @@ const Invoices = () => {
   let listOfTemplates = []; // List to be used for select template dropdown
   
 
-  
 
   const [templateList , setTemplateList] =  useState([]);
 
@@ -66,9 +70,11 @@ const Invoices = () => {
     setTemplate(event.target.value);
 
   };
-  const initData = (event) => {
+  const initData = () => {
     retrieveTemplatesList();
+    console.log(templateList);
   };
+  
   const handleIntegrationChange = (event) => {
     setIntegration(event.target.value);
   };
@@ -84,8 +90,6 @@ const Invoices = () => {
   const handleTempSelectOpen = () => {
     //Populate template values
     setOpenTempSelect(true);
-
-
   };
   const handleIntSelectClose = () => {
     setOpenIntSelect(false);
@@ -105,12 +109,14 @@ const Invoices = () => {
   .get()
   .then(function(querySnapshot){
     querySnapshot.forEach(function(doc){
-      listOfTemplates.push(doc.get('templateName').templateName);
+      listOfTemplates.push({value : doc.id, label: doc.get('templateName').templateName});
+      //listOfTemplates.push( doc.get('templateName').templateName);
       console.log(doc.id, " =>", doc.data());
       setTemplateList(doc.get('templateName').templateName);
     });
     console.log('The values of array');
     console.log(listOfTemplates);
+    setTemplateList(listOfTemplates);
   })
   .catch(function(err){
     console.log("Error getting doc: "+ err);
@@ -118,14 +124,14 @@ const Invoices = () => {
 
  };
 
-
+ useEffect(() => initData(),[]); //Code executed on page load
   return (
     <div className={classes.container}>
-      {initData}
+     
         <div className={classes.optionsContainer}>
             <FormControl className={classes.formControl}>
                 <InputLabel id="demo-controlled-open-select-label">Select Template</InputLabel>
-                <Select
+                <Select 
                     className={classes.select}
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
@@ -134,6 +140,7 @@ const Invoices = () => {
                     onOpen={handleTempSelectOpen}
                     value={template}
                     onChange={handleTemplateChange}
+                    options={initData}
                 >
                   
                   
@@ -198,14 +205,8 @@ const Invoices = () => {
         </div>
     </div>
   );
-
-
-
-
-
-
-  
 }
+
 
 
 
