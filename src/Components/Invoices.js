@@ -57,10 +57,7 @@ const Invoices = () => {
   const [openTempSelect, setOpenTempSelect] = useState(false);
   const [openIntSelect , setOpenIntSelect] = useState(false);
   const [files , setFiles] = useState([]);
-  let listOfTemplates = []; // List to be used for select template dropdown
-  
-
-
+  const listOfTemplates = []; // List to be used for select template dropdown
   const [templateList , setTemplateList] =  useState([]);
 
 
@@ -89,6 +86,8 @@ const Invoices = () => {
 
   const handleTempSelectOpen = () => {
     //Populate template values
+    console.log(templateList);
+    
     setOpenTempSelect(true);
   };
   const handleIntSelectClose = () => {
@@ -109,13 +108,12 @@ const Invoices = () => {
   .get()
   .then(function(querySnapshot){
     querySnapshot.forEach(function(doc){
+      //listOfTemplates[doc.id] = doc.get('templateName').templateName;
       listOfTemplates.push({value : doc.id, label: doc.get('templateName').templateName});
       //listOfTemplates.push( doc.get('templateName').templateName);
       console.log(doc.id, " =>", doc.data());
-      setTemplateList(doc.get('templateName').templateName);
+      //setTemplateList(doc.get('templateName').templateName);
     });
-    console.log('The values of array');
-    console.log(listOfTemplates);
     setTemplateList(listOfTemplates);
   })
   .catch(function(err){
@@ -129,7 +127,8 @@ const Invoices = () => {
     <div className={classes.container}>
      
         <div className={classes.optionsContainer}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} placeholder="Type">
+            
                 <InputLabel id="demo-controlled-open-select-label">Select Template</InputLabel>
                 <Select 
                     className={classes.select}
@@ -139,12 +138,14 @@ const Invoices = () => {
                     onClose={handleTempSelectClose}
                     onOpen={handleTempSelectOpen}
                     value={template}
-                    onChange={handleTemplateChange}
-                    options={initData}
+                    onChange={handleTemplateChange} 
+                    
                 >
-                  
-                  
-
+  
+    
+    {templateList.map((e, keyIndex) => {
+      return (<MenuItem key={e.value} value={e.label}>{e.label}</MenuItem>);
+    }) }
                 </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
@@ -162,7 +163,7 @@ const Invoices = () => {
                     <MenuItem value="">
                     <em>None</em>
                     </MenuItem>
-                    <MenuItem value={1}>Google Sheet</MenuItem>
+
                     <MenuItem value={2}>Integration 2</MenuItem>
                     <MenuItem value={3}>Integration 3</MenuItem>
                 </Select>
