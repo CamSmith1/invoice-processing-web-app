@@ -69,7 +69,6 @@ const Invoices = () => {
   };
   const initData = () => {
     retrieveTemplatesList();
-    console.log(templateList);
   };
   
   const handleIntegrationChange = (event) => {
@@ -85,8 +84,7 @@ const Invoices = () => {
   };
 
   const handleTempSelectOpen = () => {
-    //Populate template values
-    console.log(templateList);
+
     
     setOpenTempSelect(true);
   };
@@ -108,11 +106,7 @@ const Invoices = () => {
   .get()
   .then(function(querySnapshot){
     querySnapshot.forEach(function(doc){
-      //listOfTemplates[doc.id] = doc.get('templateName').templateName;
       listOfTemplates.push({value : doc.id, label: doc.get('templateName').templateName});
-      //listOfTemplates.push( doc.get('templateName').templateName);
-      console.log(doc.id, " =>", doc.data());
-      //setTemplateList(doc.get('templateName').templateName);
     });
     setTemplateList(listOfTemplates);
   })
@@ -138,14 +132,11 @@ const Invoices = () => {
                     onClose={handleTempSelectClose}
                     onOpen={handleTempSelectOpen}
                     value={template}
-                    onChange={handleTemplateChange} 
-                    
+                    onChange={handleTemplateChange}                   
                 >
-  
-    
-    {templateList.map((e, keyIndex) => {
-      return (<MenuItem key={e.value} value={e.label}>{e.label}</MenuItem>);
-    }) }
+            {templateList.map((e, keyIndex) => {
+              return (<MenuItem key={e.value} value={e.label}>{e.label}</MenuItem>);
+            }) }
                 </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
