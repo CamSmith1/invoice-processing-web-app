@@ -96,6 +96,12 @@ const Invoices = () => {
     setOpenIntSelect(true);
   };
 
+  const handleSubmit = () => {
+   //TODO: Logic to upload all files to the OCR folder in firebase, create a temp folder with a unique name
+   //Second part is to execute a cloud function to loop over all files in the new folder and perform OCR based on the template
+   //Then delete the temp folder and display the data 
+  };
+
   /*************************************************************************************/  
 //Function to return a list of all templates related to the user account
  const retrieveTemplatesList = () => {
@@ -177,7 +183,7 @@ const Invoices = () => {
                 className={classes.button} 
                 variant="contained" 
                 color="primary" 
-                onClick={retrieveTemplatesList} 
+                onClick={handleSubmit} 
                 >
                 Submit
                 </Button>
