@@ -16,9 +16,11 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
   const filePath = object.name;
   const fileName = path.basename(filePath);
   const tempFilePath = path.join(os.tmpdir(), fileName);
- // const tempFilePath = path.join('temp', fileName);
-  //if (fileName.endsWith('.png')) return false;
-  //if (!fileName.endsWith('.pdf')) return false;
+
+  //Only execute function for files in the temp folder
+  if(filePath.includes("temp")){
+
+
   console.log('Setting Variables');
 
   const newName = path.basename(filePath, '.pdf') + 'converted.png';
@@ -26,6 +28,7 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
   console.log('FilePath ' + filePath);
   console.log('newName ' + newName);
 
+  
   const bucket = gcs.bucket(object.bucket);
 
   // Download file from bucket.
@@ -69,5 +72,10 @@ exports.makePNG = functions.storage.object().onFinalize((object) => {
     console.log('exception:', err);
     return err;
   });
+
+}
+else{
+  console.log('The file is not in the temp folder so function did not execute');
+}
 
 });
