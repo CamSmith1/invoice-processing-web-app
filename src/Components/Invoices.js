@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 const Invoices = () => {
 
  
- 
+ let templateSelected = false;
   const classes = useStyles();
   const [template, setTemplate] = useState('');
   const [integration, setIntegration] = useState('');
@@ -65,6 +65,7 @@ const Invoices = () => {
   /********************Utility Functions******************************** */
   const handleTemplateChange = (event) => {
     setTemplate(event.target.value);
+    templateSelected = true;
 
   };
   const initData = () => {
@@ -100,7 +101,91 @@ const Invoices = () => {
    //TODO: Logic to upload all files to the OCR folder in firebase, create a temp folder with a unique name
    //Second part is to execute a cloud function to loop over all files in the new folder and perform OCR based on the template
    //Then delete the temp folder and display the data 
+
+   if(templateSelected === true){
+
+    //Use the files variable and upload to a bucket
+   let transactionID = generateTransactionID(30); //Unique ID for the folder in firestore
+   let baseDirectory = 'OCR/';
+   let destinationDirectory = baseDirectory + transactionID;
+   onUploadSubmission(destinationDirectory);
+
+   //TODO: Write a cloud function that loops over all files in the destination directory and performs OCR using the selected template
+     
+   }
+
+
   };
+
+
+  //Uploads all the files selected to firebase under the temp directory
+  const onUploadSubmission = (dir) => {
+   // e.preventDefault(); // prevent page refreshing
+      const promises = [];
+      files.forEach(file => {
+       const uploadTask = 
+        firebase.storage().ref().child(`${dir}/${file.name}`).put(file);
+          promises.push(uploadTask);
+          uploadTask.on(
+             firebase.storage.TaskEvent.STATE_CHANGED,
+             snapshot => {
+              const progress =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                 if (snapshot.state === firebase.storage.TaskState.RUNNING) {
+                  console.log(`Progress: ${progress}%`);
+                 }
+               },
+               error => console.log(error.code),
+               async () => {
+                 const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+  
+                }
+               );
+             } );
+         Promise.all(promises)
+          .then(() => alert('All files uploaded'))
+          .catch(err => console.log(err.code));
+   }
+  
+
+
+
+
+
+
+
+
+
+
+
+//When given a length generate a temp name for a file of given length
+function generateTransactionID(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /*************************************************************************************/  
 //Function to return a list of all templates related to the user account
