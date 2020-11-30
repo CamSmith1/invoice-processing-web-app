@@ -37,3 +37,8 @@ The Cloud Run project can be invoked through the pub sub with the command
  //Note I am deleting the the container,
 
  You will need to figure out how to do it by going a bunch of stuff im tired
+
+ I have scaled the kubernetes cluster nodes down to 0 on the node pool
+ I have deleted invoice_ocr_pubsub which is the container that lives in pubsub directory;
+ Follow the tutorial here to recreate
+ https://cloud.google.com/run/docs/tutorials/image-processing
