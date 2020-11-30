@@ -1,0 +1,39 @@
+Pub Sub GCP Integration Notes date 30/11/20
+
+I have implemented basic GCP Cloud run and Pub Sub functionality.
+
+I have a basic app in the pub sub folder and a docker container .
+These can be modified and deployed with the commands below 
+
+Open CLI in the root directory of pub sub
+
+//DEPLOYMENT AND BUILD
+Deploy an update to the App build
+gcloud run deploy python-ocr-container --image gcr.io/invoice-processing-webapp/invoice_ocr_pubsub
+
+
+For the app pretty much write it in main.py and then execute the command above
+
+
+Deploy an update to the docker container
+builds submit --tag gcr.io/invoice-processing-webapp/invoice_ocr_pubsub
+
+//^^^^^^^^^^^^^^^
+
+//Execution and testing
+The Cloud Run project can be invoked through the pub sub with the command 
+
+ gcloud pubsub topics publish executeOCR --message "Runner"
+
+//Notes
+ Cloud run is exepensive so scale the nodes down to 0 when not in use
+
+
+ //Build notes important!
+ So the main process for invoking the Pub sub is we will execute a Push from the Website on File upload which returns a messageID
+ We will then execute a Pull with the message ID to return the data
+
+
+ //Note I am deleting the the container,
+
+ You will need to figure out how to do it by going a bunch of stuff im tired
