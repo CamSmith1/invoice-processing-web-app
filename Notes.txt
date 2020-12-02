@@ -8,6 +8,12 @@ These can be modified and deployed with the commands below
 Open CLI in the root directory of pub sub
 
 //DEPLOYMENT AND BUILD
+
+Always deploy the container and then the app
+
+Deploy an update to the docker container
+gcloud builds submit --tag gcr.io/invoice-processing-webapp/invoice_ocr_pubsub
+
 Deploy an update to the App build
 gcloud run deploy python-ocr-container --image gcr.io/invoice-processing-webapp/invoice_ocr_pubsub
 
@@ -15,8 +21,6 @@ gcloud run deploy python-ocr-container --image gcr.io/invoice-processing-webapp/
 For the app pretty much write it in main.py and then execute the command above
 
 
-Deploy an update to the docker container
-builds submit --tag gcr.io/invoice-processing-webapp/invoice_ocr_pubsub
 
 //^^^^^^^^^^^^^^^
 
