@@ -53,7 +53,7 @@
     "httpMethod": "POST",
     "apiId": "j3azlsj0c4"
   },
-  "body": " { \"template\": { \"labels\": [ {\"id\":\"0\", \"label\": \"accountnumber\", \"height\": \"24\", \"width\":\"133\", \"x\":\"966\", \"y\":\"141\"}, {\"id\":\"1\", \"label\": \"invoicedate\", \"height\": \"34\", \"width\":\"163\", \"x\":\"961\", \"y\":\"211\"}, {\"id\":\"2\", \"label\": \"total\", \"height\": \"24\", \"width\":\"133\", \"x\":\"966\", \"y\":\"141\"} ] } } ",
+  "body": " { \"template\": { \"labels\": [ {\"id\":\"0\", \"label\": \"accountnumber\", \"height\": \"24\", \"width\":\"133\", \"x\":\"966\", \"y\":\"141\"}, {\"id\":\"1\", \"label\": \"invoicedate\", \"height\": \"34\", \"width\":\"163\", \"x\":\"961\", \"y\":\"211\"}, {\"id\":\"2\", \"label\": \"total\", \"height\": \"24\", \"width\":\"133\", \"x\":\"966\", \"y\":\"141\"} ] }, \"pdffiles\": { \"files\":[ {\"base64\": \"12345\"}, {\"base64\": \"22222\"}, {\"base64\": \"55555\"} ] } } ",
 
   
   "isBase64Encoded": false
