@@ -133,7 +133,7 @@ const Main = ({labels, addLabel}) => {
             templateName: {templateName},
             labels: lbls
           });  
-          console.log(template); 
+          console.log('Stringing' + JSON.stringify(template)); 
           toast("Successfully created template");
         }
         else{
