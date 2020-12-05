@@ -56,7 +56,7 @@ def ocr(event, context):
         extractedFileDate = {} #A dict that will store all the data extracted from 1 file
         with open(img,'rb') as file:
             invoice = Image.open(file) #Invoice variable is the individual invoice we are working with
-            invoice = image.resize((500,500),Image.ANTIALIAS) # TODO figure out the dimensions of the image
+            invoice = image.resize((1653,2339),Image.ANTIALIAS) # TODO figure out the dimensions of the image
             cv2img = cv2.imread(invoice) #read the invoice in cv2 this might not work
 
             for label in labelsArray:

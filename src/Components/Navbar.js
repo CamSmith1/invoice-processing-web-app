@@ -10,6 +10,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
+
+
+
 
 
 
@@ -33,8 +38,11 @@ const useStyles = makeStyles((theme) => ({
     textDecoration : 'none'
   },
   button : {
-    color : 'white'
+    color : 'white',
+    border: 'none',
+
   },
+
   menuButton: {
     marginRight: theme.spacing(2),
     
@@ -51,6 +59,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+
   const handleChange = (event) => {
     setAuth(event.target.checked);
   };
@@ -62,6 +71,9 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+
+
 
   return (
     <AppBar position="relative" className={classes.appBar}>
@@ -100,6 +112,20 @@ const Navbar = () => {
             Integrations
           </Button>
         </Link>
+
+        
+        <DropdownButton id="dropdown-item-button" title="Invoice Manager" className={classes.button} >
+        <Link className={classes.link} to="/app">
+          <Dropdown.Item as="button">Create Invoice Template</Dropdown.Item>
+          </Link>
+          <Dropdown.Item as="button">Manage Templates</Dropdown.Item>
+        </DropdownButton>
+        
+
+
+
+        
+ 
 
         <div className={classes.login}>
               <IconButton
