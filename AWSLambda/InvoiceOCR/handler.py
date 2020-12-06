@@ -14,8 +14,11 @@ import cv2
 
 app = Chalice(app_name='pdf2image')
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\cameron.smith.dav\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-poppler_path = r"C:\Users\cameron.smith.dav\Documents\GitHub\invoice-processing-web-app\AWSLambda\InvoiceOCR\poppler-20.11.0\bin"
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Users\cameron.smith.dav\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+if os.getenv('AWS_EXECUTION_ENV') is not None:
+    os.environ['LD_LIBRARY_PATH'] = '/opt/lib'
+    os.environ['TESSDATA_PREFIX'] = '/opt/tessdata'
+    pytesseract.pytesseract.tesseract_cmd = '/opt/tesseract'
 
 def ocr(event, context):
 

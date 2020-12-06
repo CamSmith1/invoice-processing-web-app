@@ -1,0 +1,15 @@
+Serverless: Stack update finished...
+Service Information
+service: tesseract-aws-lambda
+stage: dev
+region: us-east-1
+stack: tesseract-aws-lambda-dev
+resources: 12
+api keys:
+  None
+endpoints:
+  POST - https://80ta11frx9.execute-api.us-east-1.amazonaws.com/dev/ocr
+functions:
+  ocr: tesseract-aws-lambda-dev-ocr
+layers:
+  OCR: arn:aws:lambda:us-east-1:945616793337:layer:ocr-layer:1
