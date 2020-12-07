@@ -1,5 +1,5 @@
 import base64
-from chalice import Chalice, Response
+#from chalice import Chalice, Response
 from io import BytesIO
 import json
 import pytesseract
@@ -12,7 +12,7 @@ import glob
 import cv2
 #import ghostscript
 
-app = Chalice(app_name='pdf2image')
+#app = Chalice(app_name='pdf2image')
 
 #pytesseract.pytesseract.tesseract_cmd = r'C:\Users\cameron.smith.dav\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 if os.getenv('AWS_EXECUTION_ENV') is not None:
@@ -99,8 +99,15 @@ def ocr(event, context):
 
     return response
     
-    
-    
+    #How to debug
+
+    #python use_ocr_as_a_service.py
+
+    #To deploy service
+    #serverless deploy --stage dev 
+
+    #To open container
+    #docker run -it ocrcontainer bash
     
     #TODOS
     #Update the JSON to include a list of URLS for the uploaded images and or PDF's
