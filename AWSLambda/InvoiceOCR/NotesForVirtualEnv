@@ -1,0 +1,10 @@
+I have setup a virtual Env in the env folder to access
+
+./env/Scripts/activate
+
+to exit just type deactivate
+
+Todo Import the secrets lib into the environment then it should all be good to zip up
+
+use this as reference 
+https://www.youtube.com/watch?v=ItE6MAZaiJY
