@@ -51,6 +51,9 @@ def handler(event, context):
             page.save('/tmp/' +str(counter) + '.jpg', 'JPEG')
             print('The file name is')
             print('/tmp/' +str(counter) + '.jpg')
+            #This is really bad but using counter to create unique names TODO handle multi page pdf
+            counter += 1
+
             #File cleanup delete pdf
         if os.path.exists(filename):
             print('Deleting file' + filename)
@@ -64,31 +67,31 @@ def handler(event, context):
     images = glob.glob("/tmp/*.jpg") #Get a collection of all files in the temp folder
     print('Reading glob for images in tmp directory')
     for img in images:
+        
         extractedFileDate = {} #A dict that will store all the data extracted from 1 file
-        with open(img,'rb') as file:
             #invoice = Image.open(file) #Invoice variable is the individual invoice we are working with
            # invoice = image.resize((1653,2339),Image.ANTIALIAS) # TODO figure out the dimensions of the image
+            
+        invoice = cv2.imread(img)
+        invoice = cv2.resize(invoice, (1653,2339), interpolation=cv2.INTER_AREA)
 
-            invoice = cv2.imread(file)
-            invoice = cv2.resize(invoice, (1653,2339), interpolation=cv2.INTER_AREA)
+        for label in labelsArray:
+            x = int(label['x'])
+            y = int(label['y'])
+            w = int(label['width'])
+            h = int(label['height'])
+            lblName = label['label']
 
-            for label in labelsArray:
-                x = label['x']
-                y = label['y']
-                w = label['width']
-                h = label['height']
-                lblName = label['label']
+            crop_img = invoice[y:y+h, x:x+w]
+            gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
-                crop_img = cv2img[y:y+h, x:x+w]
-                gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+            #create a temp file from the extracted region
+            filename = "{}.jpg".format(os.getpid())
+            cv2.imwrite(filename, gray)
 
-                #create a temp file from the extracted region
-                filename = "{}.jpg".format(os.getpid())
-                cv2.imwrite(filename, gray)
-
-                #extracted text from the specified region
-                extractedText = pytesseract.image_to_string(cv2.imread(filename))
-                extractedFileDate[lblName] = extractedText #Let the extracted next into the dict
+            #extracted text from the specified region
+            extractedText = pytesseract.image_to_string(cv2.imread(filename))
+            extractedFileDate[lblName] = extractedText #Let the extracted next into the dict
             #Take all the data extracted from a single invoice and insert it as a record to allExtractedInvoiceData array
         allExtractedInvoiceData.append(extractedFileDate)
 
