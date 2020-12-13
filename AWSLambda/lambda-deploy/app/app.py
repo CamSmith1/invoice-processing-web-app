@@ -78,7 +78,7 @@ def handler(event, context):
             cv2.imwrite(filename, gray)
 
             #extracted text from the specified region
-            extractedText = pytesseract.image_to_string(Image.open(filename))
+            extractedText = pytesseract.image_to_string(Image.open(filename), lang='eng')
             print(extractedText)
             extractedFileDate[lblName] = extractedText #Let the extracted next into the dict
             #Take all the data extracted from a single invoice and insert it as a record to allExtractedInvoiceData array

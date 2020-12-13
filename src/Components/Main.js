@@ -70,10 +70,10 @@ const Main = ({labels, addLabel}) => {
   const handleFileChange = e => {
     console.log(e.target.files[0])
     //Debug to use local file
-    selectFile(URL.createObjectURL(e.target.files[0]))
+   // selectFile(URL.createObjectURL(e.target.files[0]))
 
     //Comment out firebase functions to save resources
-    /*
+    
     const file = e.target.files[0] ;
     const fileName = generateTempFileName(30)
     const uploadTask = storage.ref(`/temp/${fileName}`).put(file);
@@ -97,7 +97,7 @@ const Main = ({labels, addLabel}) => {
         // setCropButtons(true);
        })
     })
-    */
+    
   }
 
  /*******************************Integrated Firebase Functions******************************************** */ 
