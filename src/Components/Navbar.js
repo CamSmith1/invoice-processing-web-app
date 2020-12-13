@@ -84,42 +84,49 @@ const Navbar = () => {
               Home
           </Button>
         </Link>
-        <Link className={classes.link} to="/dashboard">
+{/*         <Link className={classes.link} to="/dashboard">
           <Button 
           className={classes.button}
           >
             Dashboard
           </Button>
-        </Link>
-        <Link className={classes.link} to="/app">
+        </Link> */}
+{/*         <Link className={classes.link} to="/app">
           <Button 
           className={classes.button}
           >
             Create Template
           </Button>
-        </Link>
-        <Link className={classes.link} to="/invoices">
+        </Link> */}
+{/*         <Link className={classes.link} to="/invoices">
           <Button 
           className={classes.button}
           >
             Process Invoices
           </Button>
-        </Link>
+        </Link> */}
+{/*       
         <Link className={classes.link} to="/integrations">
           <Button 
           className={classes.button}
           >
             Integrations
           </Button>
-        </Link>
+        </Link> */}
 
         
         <DropdownButton id="dropdown-item-button" title="Invoice Manager" className={classes.button} >
         <Link className={classes.link} to="/app">
           <Dropdown.Item as="button">Create Invoice Template</Dropdown.Item>
           </Link>
-          <Dropdown.Item as="button">Manage Templates</Dropdown.Item>
+          <Link className={classes.link} to="/app">
+         <Dropdown.Item as="button">Manage Templates</Dropdown.Item>
+         </Link>
+         <Link className={classes.link} to="/invoices">
+         <Dropdown.Item as="button">Process Invoices</Dropdown.Item>
+         </Link>
         </DropdownButton>
+      
         
 
 

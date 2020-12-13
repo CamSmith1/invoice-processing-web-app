@@ -230,26 +230,6 @@ function generateTransactionID(length) {
             }) }
                 </Select>
             </FormControl>
-            <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select2-label">Select Integration</InputLabel>
-                <Select
-                    className={classes.select}
-                    labelId="demo-controlled-open-select2-label"
-                    id="demo-controlled-open-select-2"
-                    open={openIntSelect}
-                    onClose={handleIntSelectClose}
-                    onOpen={handleIntSelectOpen}
-                    value={integration}
-                    onChange={handleIntegrationChange}
-                >
-                    <MenuItem value="">
-                    <em>None</em>
-                    </MenuItem>
-
-                    <MenuItem value={2}>Integration 2</MenuItem>
-                    <MenuItem value={3}>Integration 3</MenuItem>
-                </Select>
-            </FormControl>
             <input
                 accept="*/*"
                 className={classes.input}
