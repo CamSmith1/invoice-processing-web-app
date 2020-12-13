@@ -50,36 +50,37 @@ const useStyles = makeStyles((theme) => ({
 const Invoices = () => {
 
  
- let templateSelected = false;
+ //let templateSelected = false;
   const classes = useStyles();
   const [template, setTemplate] = useState('');
-  const [integration, setIntegration] = useState('');
+  const [templateJSON, setTemplateJSON] = useState(''); //The value of the selected template to be used in JSON
   const [openTempSelect, setOpenTempSelect] = useState(false);
-  const [openIntSelect , setOpenIntSelect] = useState(false);
+  const [templateSelected, setTemplateSelected] = useState(false);
   const [files , setFiles] = useState([]);
   const listOfTemplates = []; // List to be used for select template dropdown
   const [templateList , setTemplateList] =  useState([]);
-
+  const [b64Array , setb64Array] =  useState([]);
 
 
   /********************Utility Functions******************************** */
   const handleTemplateChange = (event) => {
     setTemplate(event.target.value);
-    templateSelected = true;
+    setTemplateSelected(true)
+    setTemplateJSON(JSON.stringify(event.target.value)) ; 
 
   };
   const initData = () => {
     retrieveTemplatesList();
   };
   
-  const handleIntegrationChange = (event) => {
-    setIntegration(event.target.value);
-  };
+  
+
   const handleFileUpload = (event) => {
     const arr = files.concat(Object.values(event.target.files));
     setFiles(arr)
     console.log(arr)
 }
+
   const handleTempSelectClose = () => {
     setOpenTempSelect(false);
   };
@@ -89,101 +90,81 @@ const Invoices = () => {
     
     setOpenTempSelect(true);
   };
-  const handleIntSelectClose = () => {
-    setOpenIntSelect(false);
-  };
+ 
 
-  const handleIntSelectOpen = () => {
-    setOpenIntSelect(true);
-  };
-
+  //Send a query to Lambda to process data
   const handleSubmit = () => {
-   //TODO: Logic to upload all files to the OCR folder in firebase, create a temp folder with a unique name
-   //Second part is to execute a cloud function to loop over all files in the new folder and perform OCR based on the template
-   //Then delete the temp folder and display the data 
 
-   if(templateSelected === true){
+    console.log('is a template selected? ' + templateSelected)
+   if(templateSelected === true)
+   {
+      //convertFilesToBase64(); // Set the react hook setb64Array and populate it with all the base64 JSON from pdfs
 
-    //Use the files variable and upload to a bucket
-   let transactionID = generateTransactionID(30); //Unique ID for the folder in firestore
-   let baseDirectory = 'OCR/';
-   let destinationDirectory = baseDirectory + transactionID;
-   onUploadSubmission(destinationDirectory);
+      //TODO For some reason the loop over files is happening async
+      files.forEach(item => {
+        var reader = new FileReader();
+        reader.readAsDataURL(item);
+  
+        reader.onload = function () {
+          //Successfully converted the pdf to b64
+          var b64PDFObj = {base64: reader.result};
+          setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
+          console.log('Successfully set the value')
+      
+        };
+        reader.onerror = function (error) {
+          console.log('Error: ', error);
+        };
+  
+      });
 
-   //TODO: Write a cloud function that loops over all files in the destination directory and performs OCR using the selected template
-     
+
+      console.log('XXXXXX')
+      console.log(JSON.stringify(b64Array))
+
+
    }
-
 
   };
 
 
-  //Uploads all the files selected to firebase under the temp directory
-  const onUploadSubmission = (dir) => {
-   // e.preventDefault(); // prevent page refreshing
-      const promises = [];
-      files.forEach(file => {
-       const uploadTask = 
-        firebase.storage().ref().child(`${dir}/${file.name}`).put(file);
-          promises.push(uploadTask);
-          uploadTask.on(
-             firebase.storage.TaskEvent.STATE_CHANGED,
-             snapshot => {
-              const progress =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                 if (snapshot.state === firebase.storage.TaskState.RUNNING) {
-                  console.log(`Progress: ${progress}%`);
-                 }
-               },
-               error => console.log(error.code),
-               async () => {
-                 const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-  
-                }
-               );
-             } );
-         Promise.all(promises)
-          .then(() => alert('All files uploaded'))
-          .catch(err => console.log(err.code));
-   }
-  
+  const convertFilesToBase64 = () => {
+   
+
+    files.forEach(item => {
+
+      var reader = new FileReader();
+      reader.readAsDataURL(item);
+
+      reader.onload = function () {
+        //Successfully converted the pdf to b64
+        var b64PDFObj = {base64: reader.result};
+        setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+
+    });
 
 
+/*     files.map((item) => {
+
+      var reader = new FileReader();
+      reader.readAsDataURL(item);
+
+      reader.onload = function () {
+        //Successfully converted the pdf to b64
+        var b64PDFObj = {base64: reader.result};
+        setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }); */
 
 
-
-
-
-
-
-
-
-//When given a length generate a temp name for a file of given length
-function generateTransactionID(length) {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -197,7 +178,8 @@ function generateTransactionID(length) {
   .get()
   .then(function(querySnapshot){
     querySnapshot.forEach(function(doc){
-      listOfTemplates.push({value : doc.id, label: doc.get('templateName').templateName});
+      console.log(doc.get('labels'));
+      listOfTemplates.push({value : doc.get('labels'), label: doc.get('templateName').templateName});
     });
     setTemplateList(listOfTemplates);
   })
@@ -226,7 +208,7 @@ function generateTransactionID(length) {
                     onChange={handleTemplateChange}                   
                 >
             {templateList.map((e, keyIndex) => {
-              return (<MenuItem key={e.value} value={e.label}>{e.label}</MenuItem>);
+              return (<MenuItem key={e.label} value={e.value}>{e.label}</MenuItem>);
             }) }
                 </Select>
             </FormControl>
@@ -269,8 +251,6 @@ function generateTransactionID(length) {
     </div>
   );
 }
-
-
 
 
 export default Invoices
