@@ -59,27 +59,24 @@ const Invoices = () => {
   const [files , setFiles] = useState([]);
   const listOfTemplates = []; // List to be used for select template dropdown
   const [templateList , setTemplateList] =  useState([]);
-  const [b64Array , setb64Array] =  useState([]);
 
 
   /********************Utility Functions******************************** */
   const handleTemplateChange = (event) => {
     setTemplate(event.target.value);
     setTemplateSelected(true)
-    setTemplateJSON(JSON.stringify(event.target.value)) ; 
+    setTemplateJSON(event.target.value) ; 
 
   };
   const initData = () => {
     retrieveTemplatesList();
   };
   
-  
-
   const handleFileUpload = (event) => {
     const arr = files.concat(Object.values(event.target.files));
     setFiles(arr)
     console.log(arr)
-}
+  };
 
   const handleTempSelectClose = () => {
     setOpenTempSelect(false);
@@ -91,8 +88,6 @@ const Invoices = () => {
     setOpenTempSelect(true);
   };
 
-
-
   //Promise function to read files with file reader
   function readFiletoB64(item)
   {
@@ -103,38 +98,43 @@ const Invoices = () => {
       reader.onload = function () {
         //Successfully converted the pdf to b64
          let b64PDFObj = {base64: reader.result};
-
-        console.log('PRINTING b64ARRAY' + JSON.stringify(b64Array));
         resolve(b64PDFObj)
       };
     });
-  }
- 
+  };
 
   //Send a query to Lambda to process data
   async function handleSubmit(){
 
     console.log('is a template selected? ' + templateSelected)
-   if(templateSelected === true)
-   {
-      //convertFilesToBase64(); // Set the react hook setb64Array and populate it with all the base64 JSON from pdfs
-
+   if(templateSelected === true){
+      let arr = [];
       for(var i = 0; i < files.length; i++){
        // let item = ;
         let fileData = await readFiletoB64(files[i]); //Base64 data of the file
-        console.log('DDDD' + JSON.stringify(fileData))
-       // setb64Array(oldb64Array => [...oldb64Array, fileData]);
-
+        arr.push(fileData)
       }
 
+      var jsonBody = buildocrPayload(arr);
+      //
+     
    }
-  
+  }
+
+  //Builds a JSON structure for the payload to send to Lambda for OCR
+  function buildocrPayload (filesArr) {
+    var JSONBody = {
+      "template":{
+        "labels": templateJSON
+      },
+      "pdffiles": {
+        "files": filesArr
+      }
+    };
+    return JSONBody;
+
   }
   
-
-
-  
-
 
   /*************************************************************************************/  
 //Function to return a list of all templates related to the user account
