@@ -90,82 +90,50 @@ const Invoices = () => {
     
     setOpenTempSelect(true);
   };
+
+
+
+  //Promise function to read files with file reader
+  function readFiletoB64(item)
+  {
+    return new Promise((resolve, reject) => {
+      console.log('In the promise')
+      var reader = new FileReader()
+      reader.readAsDataURL(item);
+      reader.onload = function () {
+        //Successfully converted the pdf to b64
+         let b64PDFObj = {base64: reader.result};
+
+        console.log('PRINTING b64ARRAY' + JSON.stringify(b64Array));
+        resolve(b64PDFObj)
+      };
+    });
+  }
  
 
   //Send a query to Lambda to process data
-  const handleSubmit = () => {
+  async function handleSubmit(){
 
     console.log('is a template selected? ' + templateSelected)
    if(templateSelected === true)
    {
       //convertFilesToBase64(); // Set the react hook setb64Array and populate it with all the base64 JSON from pdfs
 
-      //TODO For some reason the loop over files is happening async
-      files.forEach(item => {
-        var reader = new FileReader();
-        reader.readAsDataURL(item);
-  
-        reader.onload = function () {
-          //Successfully converted the pdf to b64
-          var b64PDFObj = {base64: reader.result};
-          setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
-          console.log('Successfully set the value')
-      
-        };
-        reader.onerror = function (error) {
-          console.log('Error: ', error);
-        };
-  
-      });
+      for(var i = 0; i < files.length; i++){
+       // let item = ;
+        let fileData = await readFiletoB64(files[i]); //Base64 data of the file
+        console.log('DDDD' + JSON.stringify(fileData))
+       // setb64Array(oldb64Array => [...oldb64Array, fileData]);
 
-
-      console.log('XXXXXX')
-      console.log(JSON.stringify(b64Array))
-
+      }
 
    }
-
-  };
-
-
-  const convertFilesToBase64 = () => {
-   
-
-    files.forEach(item => {
-
-      var reader = new FileReader();
-      reader.readAsDataURL(item);
-
-      reader.onload = function () {
-        //Successfully converted the pdf to b64
-        var b64PDFObj = {base64: reader.result};
-        setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
-      };
-      reader.onerror = function (error) {
-        console.log('Error: ', error);
-      };
-
-    });
-
-
-/*     files.map((item) => {
-
-      var reader = new FileReader();
-      reader.readAsDataURL(item);
-
-      reader.onload = function () {
-        //Successfully converted the pdf to b64
-        var b64PDFObj = {base64: reader.result};
-        setb64Array(oldb64Array => [...oldb64Array, b64PDFObj]);
-      };
-      reader.onerror = function (error) {
-        console.log('Error: ', error);
-      };
-    }); */
-
-
+  
   }
+  
 
+
+  
 
 
   /*************************************************************************************/  
