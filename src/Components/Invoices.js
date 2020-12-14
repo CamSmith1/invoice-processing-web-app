@@ -13,8 +13,7 @@ import Button from '@material-ui/core/Button';
 import '@firebase/firestore';
 import {storage} from "./Firestore";
 import firebase from '@firebase/app';
-
-
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     container : {
@@ -114,12 +113,32 @@ const Invoices = () => {
         let fileData = await readFiletoB64(files[i]); //Base64 data of the file
         arr.push(fileData)
       }
-
+      console.log('Stufff')
       var jsonBody = buildocrPayload(arr);
+      console.log('Attempting first api');
+      queryOCRLambda(jsonBody)
       //
      
    }
   }
+
+  //This function queries the aws api gate way to invoke the Lambda function
+  async function queryOCRLambda(JSONBody) {
+    // POST request using axios with async/await
+    console.log('STARTING queryOCRLambda')
+    const apiKey = "GA6EROAZcC20kzulnmyxH75s4rqAAgpzi5nMHmde";
+    
+    const response = await axios.post('https://l8mdq4z58b.execute-api.us-east-1.amazonaws.com/default/OCRINVOICE', JSONBody, {
+      headers: {
+        "Content-Type" : "application/json",
+        'x-api-key' : apiKey
+      }
+    }).then((resp) => {console.log('RESPONSE FROM API '+ resp)})
+    .catch((error) => {
+      console.error(error);
+    });
+    //this.setState({ articleId: response.data.id });
+}
 
   //Builds a JSON structure for the payload to send to Lambda for OCR
   function buildocrPayload (filesArr) {
